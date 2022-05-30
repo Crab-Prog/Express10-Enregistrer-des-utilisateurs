@@ -29,11 +29,13 @@ usersRouter.post('/', (req, res) => {
   const { email } = req.body;
   let validationErrors = null;
   User.findByEmail(email)
-    .then((existingUserWithEmail) => {
-      if (existingUserWithEmail) return Promise.reject('DUPLICATE_EMAIL');
-      validationErrors = User.validate(req.body);
-      if (validationErrors) return Promise.reject('INVALID_DATA');
-      return User.create(req.body);
+  .then((existingUserWithEmail) => {
+    if (existingUserWithEmail) return Promise.reject('DUPLICATE_EMAIL');
+    validationErrors = User.validate(req.body);
+    if (validationErrors) return Promise.reject('INVALID_DATA');
+    const password = req.body.password;
+    delete req.body.password;
+    return User.hashPassword(password).then((hashedPassword) => User.create({...req.body, hashedPassword}));
     })
     .then((createdUser) => {
       res.status(201).json(createdUser);

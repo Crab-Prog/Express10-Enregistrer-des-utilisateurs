@@ -3,7 +3,8 @@ const User = require('../models/user');
 
 authRouter.post('/checkCredentials', (req, res) => {
   const { email, password } = req.body;
-  User.findByEmail(email).then((user) => {
+  User.findByEmail(email)
+  .then((user) => {
     if (!user) res.status(401).send('Invalid credentials');
     else {
       User.verifyPassword(password, user.hashedPassword).then(
@@ -13,6 +14,10 @@ authRouter.post('/checkCredentials', (req, res) => {
         }
       );
     }
+  })
+  .catch((err) => {
+    console.error(err);
+    res.status(404).send(`${email} not found.`);
   });
 });
 
