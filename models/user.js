@@ -17,7 +17,7 @@ const validate = (data, forCreation = true) => {
 };
 
 const findMany = ({ filters: { language } }) => {
-  let sql = 'SELECT id, email, firstname, lastname, city, language FROM users';
+  let sql = 'SELECT id, email, firstname, lastname, city, language, hashedPassword FROM users';
   const sqlValues = [];
   if (language) {
     sql += ' WHERE language = ?';
@@ -30,7 +30,7 @@ const findMany = ({ filters: { language } }) => {
 const findOne = (id) => {
   return db
     .query(
-      'SELECT id, email, firstname, lastname, city, language FROM users WHERE id = ?',
+      'SELECT id, email, firstname, lastname, city, language, hashedPassword FROM users WHERE id = ?',
       [id]
     )
     .then(([results]) => results[0]);
@@ -38,13 +38,13 @@ const findOne = (id) => {
 
 const findByEmail = (email) => {
   return db
-    .query('SELECT id, email, firstname, lastname, city, language FROM users WHERE email = ?', [email])
+    .query('SELECT id, email, firstname, lastname, city, language, hashedPassword FROM users WHERE email = ?', [email])
     .then(([results]) => results[0]);
 };
 
 const findByEmailWithDifferentId = (email, id) => {
   return db
-    .query('SELECT id, email, firstname, lastname, city, language FROM users WHERE email = ? AND id <> ?', [email, id])
+    .query('SELECT id, email, firstname, lastname, city, language, hashedPassword FROM users WHERE email = ? AND id <> ?', [email, id])
     .then(([results]) => results[0]);
 };
 
